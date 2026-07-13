@@ -359,7 +359,11 @@ export default function Home() {
 
       <section className="featured-media page-wrap" aria-label="Featured Strat IQ introduction">
         <ParallaxPanel className="media-frame">
-          <AbstractVisual variant="media" label="Strat IQ decision room" />
+          <div
+            className="editorial-image"
+            role="img"
+            aria-label="A senior strategy team reviewing market evidence around a worktable"
+          />
         </ParallaxPanel>
 
         <button className="play-control" type="button" onClick={() => setVideoOpen(true)}>
