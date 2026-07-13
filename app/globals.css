@@ -1,5 +1,29 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: "Aspekta";
+  src: url("/fonts/aspekta-400.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Aspekta";
+  src: url("/fonts/aspekta-500.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Aspekta";
+  src: url("/fonts/aspekta-600.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+}
+
 :root {
   --ink: #2a2928;
   --muted: #96938f;
@@ -29,7 +53,7 @@ body {
   overflow-x: hidden;
   background: var(--paper);
   color: var(--ink);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "Aspekta", "Helvetica Neue", "Avenir Next", "Segoe UI", ui-sans-serif, system-ui, sans-serif;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
 }
@@ -1804,7 +1828,7 @@ button:hover .rolling-track {
 
 /* Responsive editorial refinement */
 body {
-  font-family: "Helvetica Neue", "Avenir Next", "Segoe UI", ui-sans-serif, system-ui, sans-serif;
+  font-family: "Aspekta", "Helvetica Neue", "Avenir Next", "Segoe UI", ui-sans-serif, system-ui, sans-serif;
 }
 
 .section {
