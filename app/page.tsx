@@ -1,130 +1,225 @@
 "use client";
 
-import { ArrowRight, Menu, ShieldCheck, Target, Users } from "lucide-react";
-import { motion, useReducedMotion } from "motion/react";
-import { useState } from "react";
+import {
+  ArrowDownRight,
+  ArrowRight,
+  Check,
+  Menu,
+  X,
+} from "lucide-react";
+import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
+import { useEffect, useState } from "react";
 
 const navItems = ["Approach", "Capabilities", "Insights", "Case Studies", "About"];
 
-const questions = [
-  "Sales have slowed.",
-  "Where should we grow next?",
-  "Should we enter a new market?",
-  "Why are customers leaving?",
-];
+const intelligenceItems = [
+  {
+    label: "Business question",
+    value: "Why have qualified enquiries slowed?",
+    tone: "question",
+  },
+  {
+    label: "Observed signal",
+    value: "Search-led enquiries are down 18% while referrals remain stable.",
+    tone: "signal",
+  },
+  {
+    label: "Knowledge gap",
+    value: "Is visibility falling, or are more visitors abandoning the enquiry journey?",
+    tone: "gap",
+  },
+  {
+    label: "Decision brief",
+    value: "Diagnose demand and conversion before increasing acquisition spend.",
+    tone: "decision",
+  },
+] as const;
 
 export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const reduceMotion = useReducedMotion();
+  const { scrollY } = useScroll();
+  const visualY = useTransform(scrollY, [0, 700], [0, reduceMotion ? 0 : 30]);
+
+  useEffect(() => {
+    const unsubscribe = scrollY.on("change", (value) => setScrolled(value > 28));
+    return unsubscribe;
+  }, [scrollY]);
 
   return (
     <main>
-      <header className="site-header">
-        <div className="container nav-wrap">
-          <a href="#" className="brand">Strat IQ</a>
-          <nav className={menuOpen ? "nav-links open" : "nav-links"}>
+      <header className={scrolled ? "site-header is-scrolled" : "site-header"}>
+        <div className="shell nav-shell">
+          <a href="#top" className="brand" aria-label="Strat IQ home">
+            <span className="brand-mark" aria-hidden="true">
+              <span />
+              <span />
+            </span>
+            <span>Strat IQ</span>
+          </a>
+
+          <nav className="desktop-nav" aria-label="Primary navigation">
             {navItems.map((item) => (
-              <a key={item} href={`#${item.toLowerCase().replace(" ", "-")}`}>{item}</a>
+              <a key={item} href={`#${item.toLowerCase().replace(" ", "-")}`}>
+                {item}
+              </a>
             ))}
           </nav>
-          <a href="#start" className="button button-gold desktop-cta">Start Discovery <ArrowRight size={17} /></a>
-          <button className="menu-button" onClick={() => setMenuOpen((value) => !value)} aria-label="Toggle menu">
-            <Menu size={22} />
+
+          <a href="#start" className="button button-primary desktop-cta">
+            Start Discovery <ArrowRight size={16} strokeWidth={1.8} />
+          </a>
+
+          <button
+            type="button"
+            className="menu-toggle"
+            aria-label={menuOpen ? "Close menu" : "Open menu"}
+            aria-expanded={menuOpen}
+            onClick={() => setMenuOpen((value) => !value)}
+          >
+            {menuOpen ? <X size={23} /> : <Menu size={23} />}
           </button>
         </div>
+
+        <motion.div
+          className="mobile-panel"
+          initial={false}
+          animate={menuOpen ? "open" : "closed"}
+          variants={{
+            open: { height: "auto", opacity: 1 },
+            closed: { height: 0, opacity: 0 },
+          }}
+          transition={{ duration: 0.26, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <nav className="mobile-nav" aria-label="Mobile navigation">
+            {navItems.map((item) => (
+              <a
+                key={item}
+                href={`#${item.toLowerCase().replace(" ", "-")}`}
+                onClick={() => setMenuOpen(false)}
+              >
+                {item} <ArrowDownRight size={17} />
+              </a>
+            ))}
+            <a className="button button-primary" href="#start" onClick={() => setMenuOpen(false)}>
+              Start Discovery <ArrowRight size={16} />
+            </a>
+          </nav>
+        </motion.div>
       </header>
 
-      <section className="hero">
-        <div className="container hero-grid">
+      <section className="hero" id="top">
+        <div className="hero-noise" aria-hidden="true" />
+        <div className="shell hero-layout">
           <motion.div
+            className="hero-copy-wrap"
             initial={reduceMotion ? false : { opacity: 0, y: 24 }}
             animate={reduceMotion ? undefined : { opacity: 1, y: 0 }}
-            transition={{ duration: 0.75 }}
+            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
           >
-            <p className="eyebrow">Business intelligence & growth advisory</p>
-            <h1>Business decisions.<br /><span>Better informed.</span></h1>
-            <p className="hero-copy">
-              Strat IQ helps organisations answer important commercial questions through structured investigation,
-              market intelligence, strategic recommendations and disciplined execution.
+            <p className="eyebrow">
+              <span /> Business intelligence & growth advisory
             </p>
+
+            <h1>
+              Business decisions.
+              <br />
+              <em>Better informed.</em>
+            </h1>
+
+            <p className="hero-copy">
+              We help organisations investigate important commercial questions, understand what the evidence is saying,
+              and decide what to do next.
+            </p>
+
             <div className="hero-actions">
-              <a href="#start" className="button button-gold">Start Discovery <ArrowRight size={18} /></a>
-              <a href="#approach" className="button button-outline">Explore Our Approach</a>
+              <a href="#start" className="button button-primary">
+                Start Discovery <ArrowRight size={17} strokeWidth={1.8} />
+              </a>
+              <a href="#approach" className="text-link">
+                Explore our approach <ArrowDownRight size={17} strokeWidth={1.7} />
+              </a>
             </div>
-            <div className="trust-grid">
-              <TrustItem icon={<ShieldCheck size={19} />} title="Evidence-led" copy="Facts before opinion" />
-              <TrustItem icon={<Target size={19} />} title="Structured thinking" copy="Clarity at every step" />
-              <TrustItem icon={<Users size={19} />} title="Human judgement" copy="Experience where it matters" />
+
+            <div className="trust-row" aria-label="Our working principles">
+              {["Evidence-led", "Structured thinking", "Human judgement"].map((item) => (
+                <span key={item}>
+                  <Check size={14} strokeWidth={2} /> {item}
+                </span>
+              ))}
             </div>
           </motion.div>
 
-          <DecisionWorkspace />
-        </div>
-      </section>
+          <motion.div className="hero-visual-wrap" style={{ y: visualY }}>
+            <motion.div
+              className="intelligence-canvas"
+              initial={reduceMotion ? false : { opacity: 0, scale: 0.985 }}
+              animate={reduceMotion ? undefined : { opacity: 1, scale: 1 }}
+              transition={{ duration: 0.9, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <div className="canvas-meta">
+                <span>Decision review</span>
+                <span>Local growth assessment</span>
+              </div>
 
-      <section className="section" id="approach">
-        <div className="container">
-          <p className="eyebrow dark">The decisions leaders face</p>
-          <div className="section-heading">
-            <h2>When experience alone is no longer enough.</h2>
-            <p>We help leaders define the real question, test assumptions and make the next move with greater confidence.</p>
-          </div>
-          <div className="question-grid">
-            {questions.map((question, index) => (
-              <motion.article
-                key={question}
-                className={index === 0 ? "question-card featured" : "question-card"}
-                whileHover={reduceMotion ? undefined : { y: -5 }}
+              <div className="canvas-axis" aria-hidden="true">
+                <span>Uncertainty</span>
+                <span>Clarity</span>
+              </div>
+
+              <div className="intelligence-stack">
+                {intelligenceItems.map((item, index) => (
+                  <motion.article
+                    key={item.label}
+                    className={`intelligence-note note-${item.tone}`}
+                    initial={reduceMotion ? false : { opacity: 0, x: 18, y: 12 }}
+                    animate={reduceMotion ? undefined : { opacity: 1, x: 0, y: 0 }}
+                    transition={{
+                      duration: 0.58,
+                      delay: 0.34 + index * 0.12,
+                      ease: [0.22, 1, 0.36, 1],
+                    }}
+                    whileHover={reduceMotion ? undefined : { x: -4 }}
+                  >
+                    <span className="note-index">0{index + 1}</span>
+                    <div>
+                      <span className="note-label">{item.label}</span>
+                      <p>{item.value}</p>
+                    </div>
+                  </motion.article>
+                ))}
+              </div>
+
+              <motion.div
+                className="confidence-rule"
+                initial={reduceMotion ? false : { scaleX: 0 }}
+                animate={reduceMotion ? undefined : { scaleX: 1 }}
+                transition={{ duration: 1.1, delay: 0.8, ease: [0.22, 1, 0.36, 1] }}
               >
-                <span>0{index + 1}</span>
-                <h3>{question}</h3>
-                <ArrowRight size={19} />
-              </motion.article>
-            ))}
-          </div>
+                <span />
+                <small>Evidence before action</small>
+              </motion.div>
+            </motion.div>
+          </motion.div>
+        </div>
+
+        <div className="shell hero-footer">
+          <span>Strat IQ / 01</span>
+          <a href="#approach">
+            Continue <ArrowDownRight size={16} />
+          </a>
         </div>
       </section>
 
-      <section className="cta" id="start">
-        <div className="container cta-inner">
-          <p className="eyebrow">Start with the question</p>
-          <h2>Bring us your biggest business question.</h2>
-          <p>Every engagement begins by understanding the decision you need to make before recommending what happens next.</p>
-          <a className="button button-gold" href="mailto:hello@stratiq.example">Start Discovery <ArrowRight size={18} /></a>
+      <section className="sprint-placeholder" id="approach" aria-label="Next sprint placeholder">
+        <div className="shell placeholder-inner">
+          <p>Next sprint</p>
+          <h2>The decisions leaders face.</h2>
         </div>
       </section>
+
+      <div id="start" />
     </main>
-  );
-}
-
-function TrustItem({ icon, title, copy }: { icon: React.ReactNode; title: string; copy: string }) {
-  return <div className="trust-item">{icon}<div><strong>{title}</strong><span>{copy}</span></div></div>;
-}
-
-function DecisionWorkspace() {
-  const reduceMotion = useReducedMotion();
-  const cards = [
-    ["Business question", "Why have enquiries declined over the last six months?"],
-    ["Evidence collected", "Traffic down 18% · repeat customers stable"],
-    ["Patterns emerging", "The decline is concentrated in top-of-funnel channels."],
-    ["Recommended decision", "Improve search visibility before increasing advertising spend."],
-  ];
-
-  return (
-    <div className="workspace">
-      <div className="workspace-grid" />
-      {cards.map(([title, copy], index) => (
-        <motion.article
-          key={title}
-          className={`workspace-card card-${index + 1}`}
-          initial={reduceMotion ? false : { opacity: 0, y: 18 }}
-          animate={reduceMotion ? undefined : { opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 + index * 0.12, duration: 0.55 }}
-        >
-          <span>{title}</span>
-          <p>{copy}</p>
-        </motion.article>
-      ))}
-    </div>
   );
 }
