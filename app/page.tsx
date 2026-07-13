@@ -303,7 +303,7 @@ export default function Home() {
                 </a>
               ))}
               <a href="#Contact" onClick={() => setMenuOpen(false)}>
-                Contact
+                Start a conversation
                 <ArrowUpRight size={20} />
               </a>
             </motion.nav>
@@ -333,14 +333,27 @@ export default function Home() {
             </h1>
           </motion.div>
 
-          <motion.p
-            className="hero-support"
-            initial={reduced ? false : { opacity: 0, y: 20 }}
-            animate={reduced ? undefined : { opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.18 }}
-          >
-            We help organisations understand markets, evaluate opportunities and move important commercial decisions from uncertainty to action.
-          </motion.p>
+          <div className="hero-aside">
+            <motion.p
+              className="hero-support"
+              initial={reduced ? false : { opacity: 0, y: 20 }}
+              animate={reduced ? undefined : { opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.18 }}
+            >
+              We help organisations understand markets, evaluate opportunities and move important commercial decisions from uncertainty to action.
+            </motion.p>
+
+            <motion.a
+              className="hero-cta button-shell"
+              href="#Contact"
+              initial={reduced ? false : { opacity: 0, y: 18 }}
+              animate={reduced ? undefined : { opacity: 1, y: 0 }}
+              transition={{ duration: 0.68, delay: 0.28 }}
+            >
+              <span className="button-icon"><ArrowRight size={18} /></span>
+              <RollingLink>Start with your question</RollingLink>
+            </motion.a>
+          </div>
         </div>
       </section>
 
@@ -567,21 +580,6 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="image-cta page-wrap image-cta-second">
-        <ParallaxPanel className="image-cta-panel">
-          <AbstractVisual variant="network" label="Signals aligned around one decision" />
-          <div className="image-cta-overlay image-cta-right">
-            <Reveal>
-              <h2>Investigate deeper.<br />Move with confidence.</h2>
-            </Reveal>
-            <a className="light-button" href="#Contact">
-              <span className="button-icon"><ArrowRight size={18} /></span>
-              <RollingLink>Bring us the decision</RollingLink>
-            </a>
-          </div>
-        </ParallaxPanel>
-      </section>
-
       <section className="testimonials section" id="Testimonials">
         <div className="page-wrap intro-grid">
           <Reveal><DotLabel>Our clients say</DotLabel></Reveal>
@@ -666,10 +664,10 @@ export default function Home() {
               </div>
               <div className="price"><strong>{plan.price}</strong><small>{plan.period}</small></div>
               <a href="#Contact"><RollingLink>Discuss this engagement</RollingLink><ArrowRight size={18} /></a>
-              <div className="included">
-                <p>What is included?</p>
+              <details className="included" open={plan.featured}>
+                <summary>What is included?<Plus size={17} aria-hidden="true" /></summary>
                 <ul>{plan.features.map((feature) => <li key={feature}><span />{feature}</li>)}</ul>
-              </div>
+              </details>
             </Reveal>
           ))}
         </div>
