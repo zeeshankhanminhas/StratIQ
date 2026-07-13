@@ -1,184 +1,747 @@
 "use client";
 
-import { ArrowDownRight, ArrowRight, Check, Menu, X } from "lucide-react";
-import { motion, useReducedMotion } from "motion/react";
-import { useEffect, useState } from "react";
+import {
+  ArrowRight,
+  ArrowUpRight,
+  BarChart3,
+  ChevronLeft,
+  ChevronRight,
+  Mail,
+  Menu,
+  Minus,
+  Play,
+  Plus,
+  Search,
+  Sparkles,
+  Target,
+  X,
+} from "lucide-react";
+import { AnimatePresence, motion, useReducedMotion, useScroll, useTransform } from "motion/react";
+import { useEffect, useRef, useState } from "react";
 
-const navItems = ["About", "Capabilities", "Approach", "Insights", "Contact"];
+const navItems = ["About", "Services", "Testimonials", "Team", "Pricing"];
 
-const capabilities = [
+const services = [
   {
-    index: "01",
     label: "Market intelligence",
-    title: "Understand the market before committing resources.",
-    copy: "We examine demand, customer behaviour, competitors and commercial signals to establish where opportunity exists, what is changing and what remains uncertain.",
-    tone: "sand",
+    title: "See the market clearly",
+    summary: "Evidence-led research that separates durable opportunity from attractive noise.",
+    detail:
+      "We examine demand, category movement, competitors, customer behaviour and commercial signals. The result is a shared evidence base that shows what is known, what remains uncertain and where deeper investigation will change the decision.",
+    tone: "signal",
   },
   {
-    index: "02",
     label: "Strategic direction",
-    title: "Turn evidence into a defensible commercial decision.",
-    copy: "We make assumptions, risks, options and trade-offs visible, then translate the strongest route into a clear recommendation and decision brief.",
-    tone: "navy",
+    title: "Choose a defensible route",
+    summary: "Structured options, explicit trade-offs and recommendations built for real constraints.",
+    detail:
+      "We turn evidence into credible strategic choices, test the assumptions behind each route and make risk visible. Leaders leave with a concise decision brief, a clear recommendation and the confidence to explain why it is the right move.",
+    tone: "direction",
   },
   {
-    index: "03",
     label: "Growth execution",
-    title: "Carry the decision through to measurable action.",
-    copy: "We convert strategy into a sequenced roadmap across positioning, digital presence, campaigns, marketplaces and performance measurement.",
-    tone: "sage",
+    title: "Carry clarity into action",
+    summary: "Sequenced execution that links positioning, channels and measurement to the decision.",
+    detail:
+      "We translate the selected direction into accountable work: positioning, digital presence, campaigns, marketplaces, ownership and measurement. Every activity has a reason to exist and a signal that tells us whether it is working.",
+    tone: "growth",
   },
 ];
 
 const approach = [
-  ["01", "Clarify", "Define the real decision, intended outcome, constraints and the evidence required to move forward."],
-  ["02", "Investigate", "Gather market, customer, competitor and performance signals while separating facts from assumptions."],
-  ["03", "Decide", "Evaluate credible options, expose trade-offs and recommend the strongest practical direction."],
-  ["04", "Execute", "Translate the decision into accountable work, measurable outcomes and an adaptive roadmap."],
+  {
+    number: "01",
+    title: "Frame the decision",
+    copy: "Define the outcome, constraints, assumptions and evidence required before research begins.",
+    icon: Search,
+  },
+  {
+    number: "02",
+    title: "Build the evidence",
+    copy: "Connect market, customer, competitor and performance signals into one structured view.",
+    icon: BarChart3,
+  },
+  {
+    number: "03",
+    title: "Move with intent",
+    copy: "Select the strongest practical route and turn it into accountable, measurable action.",
+    icon: Target,
+  },
 ];
 
-const insights = [
-  ["Market entry", "The hidden cost of entering a market too early"],
-  ["Customer intelligence", "What customers say—and what their behaviour reveals"],
-  ["Execution", "Why growth plans fail after the strategy deck"],
+const testimonials = [
+  {
+    quote:
+      "Strat IQ gave us a way to separate what we believed from what the market was actually telling us. The final decision felt sharper, faster and much easier to defend.",
+    name: "Amelia Hart",
+    role: "Managing Director, Northline",
+    initials: "AH",
+  },
+  {
+    quote:
+      "The work did not end with a presentation. Every recommendation had an owner, a sequence and a measurable signal, which changed the quality of execution immediately.",
+    name: "Daniel Okoro",
+    role: "Growth Lead, Verity Works",
+    initials: "DO",
+  },
+  {
+    quote:
+      "They found the question beneath the question. That clarity stopped us spending against the wrong problem and gave the team a route everyone could support.",
+    name: "Maya Chen",
+    role: "Founder, Common Thread",
+    initials: "MC",
+  },
+  {
+    quote:
+      "The combination of commercial realism and investigative depth was rare. We understood the risks without losing momentum or ambition.",
+    name: "Oliver Grant",
+    role: "Strategy Director, Axis Group",
+    initials: "OG",
+  },
 ];
 
-function Reveal({ children, className = "", delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
+const team = [
+  ["ZM", "Zeeshan Minhas", "Strategy & growth"],
+  ["AR", "Amina Rahman", "Market intelligence"],
+  ["JT", "James Turner", "Commercial research"],
+  ["SK", "Sofia Khan", "Execution & insight"],
+];
+
+const plans = [
+  {
+    name: "Decision Sprint",
+    description: "For a focused commercial question that needs evidence and direction quickly.",
+    price: "£2,400",
+    period: "fixed engagement",
+    features: ["Decision framing workshop", "Focused market investigation", "Options and risk analysis", "Executive decision brief"],
+  },
+  {
+    name: "Growth Programme",
+    description: "For organisations moving from market understanding into a sequenced growth plan.",
+    price: "£4,800",
+    period: "from / programme",
+    featured: true,
+    features: ["Market and customer intelligence", "Strategic direction", "90-day execution roadmap", "Leadership working sessions"],
+  },
+  {
+    name: "Advisory Partner",
+    description: "For leadership teams that need continuing intelligence, challenge and momentum.",
+    price: "Custom",
+    period: "monthly advisory",
+    features: ["Monthly intelligence review", "Decision support on demand", "Execution scorecard", "Quarterly strategy reset"],
+  },
+];
+
+function Reveal({
+  children,
+  className = "",
+  delay = 0,
+}: {
+  children: React.ReactNode;
+  className?: string;
+  delay?: number;
+}) {
   const reduced = useReducedMotion();
+
   return (
     <motion.div
       className={className}
-      initial={reduced ? false : { opacity: 0, y: 36 }}
+      initial={reduced ? false : { opacity: 0, y: 30 }}
       whileInView={reduced ? undefined : { opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.18 }}
-      transition={{ duration: 0.78, delay, ease: [0.22, 1, 0.36, 1] }}
+      viewport={{ once: true, amount: 0.16 }}
+      transition={{ duration: 0.72, delay, ease: [0.22, 1, 0.36, 1] }}
     >
       {children}
     </motion.div>
   );
 }
 
+function RollingLink({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+  return (
+    <span className={`rolling-link ${className}`}>
+      <span className="rolling-track">
+        <span>{children}</span>
+        <span aria-hidden="true">{children}</span>
+      </span>
+    </span>
+  );
+}
+
+function DotLabel({ children }: { children: React.ReactNode }) {
+  return (
+    <p className="dot-label">
+      <span aria-hidden="true" />
+      {children}
+    </p>
+  );
+}
+
+function AbstractVisual({ variant, label }: { variant: string; label: string }) {
+  return (
+    <div className={`abstract-visual visual-${variant}`} role="img" aria-label={label}>
+      <span className="visual-caption">{label}</span>
+      <i className="shape shape-a" />
+      <i className="shape shape-b" />
+      <i className="shape shape-c" />
+      <i className="shape shape-d" />
+    </div>
+  );
+}
+
+function ParallaxPanel({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const reduced = useReducedMotion();
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
+  const y = useTransform(scrollYProgress, [0, 1], [-36, 36]);
+
+  return (
+    <div className={`parallax-panel ${className}`} ref={ref}>
+      <motion.div className="parallax-inner" style={{ y: reduced ? 0 : y }}>
+        {children}
+      </motion.div>
+    </div>
+  );
+}
+
 export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
+  const [videoOpen, setVideoOpen] = useState(false);
+  const [activeService, setActiveService] = useState(0);
+  const [testimonialIndex, setTestimonialIndex] = useState(0);
+  const [formState, setFormState] = useState<"idle" | "error" | "success">("idle");
   const reduced = useReducedMotion();
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 24);
-    handleScroll();
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setVideoOpen(false);
+        setMenuOpen(false);
+      }
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+    document.body.classList.toggle("is-locked", videoOpen || menuOpen);
+
+    return () => {
+      window.removeEventListener("keydown", onKeyDown);
+      document.body.classList.remove("is-locked");
+    };
+  }, [menuOpen, videoOpen]);
+
+  const nextTestimonial = () => setTestimonialIndex((current) => (current + 1) % testimonials.length);
+  const previousTestimonial = () =>
+    setTestimonialIndex((current) => (current - 1 + testimonials.length) % testimonials.length);
+
+  const handleContact = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const form = event.currentTarget;
+    const data = new FormData(form);
+    const name = String(data.get("name") || "").trim();
+    const email = String(data.get("email") || "").trim();
+    const message = String(data.get("message") || "").trim();
+
+    if (!name || !email.includes("@") || message.length < 12) {
+      setFormState("error");
+      return;
+    }
+
+    const subject = encodeURIComponent(`Strat IQ enquiry from ${name}`);
+    const body = encodeURIComponent(`${message}\n\nFrom: ${name}\nEmail: ${email}`);
+    window.location.href = `mailto:hello@stratiq.example?subject=${subject}&body=${body}`;
+    setFormState("success");
+    form.reset();
+  };
 
   return (
     <main id="top">
-      <header className={scrolled ? "site-header is-scrolled" : "site-header"}>
-        <div className="wrap nav-wrap">
-          <a className="brand" href="#top" aria-label="Strat IQ home"><span>S</span>Strat IQ</a>
-          <nav className="desktop-nav" aria-label="Primary navigation">
-            {navItems.map((item) => <a key={item} href={`#${item.toLowerCase()}`}>{item}</a>)}
-          </nav>
-          <a className="nav-action" href="#contact">Start discovery <ArrowDownRight size={17} /></a>
-          <button className="menu-toggle" onClick={() => setMenuOpen(!menuOpen)} aria-expanded={menuOpen} aria-label="Toggle navigation">
-            {menuOpen ? <X /> : <Menu />}
-          </button>
-        </div>
-        {menuOpen && (
-          <motion.nav className="mobile-nav" initial={reduced ? false : { opacity: 0, y: -10 }} animate={reduced ? undefined : { opacity: 1, y: 0 }}>
-            {navItems.map((item) => <a key={item} href={`#${item.toLowerCase()}`} onClick={() => setMenuOpen(false)}>{item}</a>)}
-          </motion.nav>
-        )}
+      <header className="site-header" id="Navbar">
+        <a className="brand" href="#top" aria-label="Strat IQ home">
+          <span aria-hidden="true" />
+          Strat IQ
+        </a>
+
+        <nav className="desktop-nav" aria-label="Primary navigation">
+          {navItems.map((item) => (
+            <a key={item} href={`#${item}`}>
+              <RollingLink>{item}</RollingLink>
+            </a>
+          ))}
+        </nav>
+
+        <a className="header-cta button-shell" href="#Contact">
+          <span className="button-icon">
+            <ArrowRight size={18} />
+          </span>
+          <RollingLink>Start a conversation</RollingLink>
+        </a>
+
+        <button
+          className="menu-toggle"
+          type="button"
+          aria-label={menuOpen ? "Close navigation" : "Open navigation"}
+          aria-expanded={menuOpen}
+          aria-controls="mobile-menu"
+          onClick={() => setMenuOpen((open) => !open)}
+        >
+          {menuOpen ? <X /> : <Menu />}
+        </button>
+
+        <AnimatePresence>
+          {menuOpen && (
+            <motion.nav
+              className="mobile-nav"
+              id="mobile-menu"
+              aria-label="Mobile navigation"
+              initial={reduced ? false : { opacity: 0, y: -16 }}
+              animate={reduced ? undefined : { opacity: 1, y: 0 }}
+              exit={reduced ? undefined : { opacity: 0, y: -16 }}
+            >
+              {navItems.map((item) => (
+                <a key={item} href={`#${item}`} onClick={() => setMenuOpen(false)}>
+                  {item}
+                  <ArrowUpRight size={20} />
+                </a>
+              ))}
+              <a href="#Contact" onClick={() => setMenuOpen(false)}>
+                Contact
+                <ArrowUpRight size={20} />
+              </a>
+            </motion.nav>
+          )}
+        </AnimatePresence>
       </header>
 
-      <section className="hero">
-        <div className="wrap hero-copy">
-          <motion.p className="kicker" initial={reduced ? false : { opacity: 0, y: 16 }} animate={reduced ? undefined : { opacity: 1, y: 0 }}>Business intelligence & growth advisory</motion.p>
-          <motion.h1 initial={reduced ? false : { opacity: 0, y: 26 }} animate={reduced ? undefined : { opacity: 1, y: 0 }} transition={{ duration: .82, delay: .08 }}>
-            Better questions.<br /><em>Clearer decisions.</em>
-          </motion.h1>
-          <motion.div className="hero-footer" initial={reduced ? false : { opacity: 0, y: 22 }} animate={reduced ? undefined : { opacity: 1, y: 0 }} transition={{ duration: .8, delay: .16 }}>
-            <p>We help organisations understand markets, evaluate opportunities and move important commercial decisions from uncertainty to action.</p>
-            <a href="#about">Explore our thinking <ArrowDownRight size={20} /></a>
+      <section className="hero" aria-labelledby="hero-title">
+        <div className="hero-geometry" aria-hidden="true">
+          <i className="hero-line line-one" />
+          <i className="hero-line line-two" />
+          <i className="hero-block block-yellow" />
+          <i className="hero-block block-grey" />
+        </div>
+
+        <div className="hero-content page-wrap">
+          <motion.div
+            className="hero-title"
+            id="hero-title"
+            initial={reduced ? false : { opacity: 0, y: 28 }}
+            animate={reduced ? undefined : { opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.08 }}
+          >
+            <h1>
+              <span className="hero-line-muted">Better questions.</span>
+              <span>Clearer decisions.</span>
+            </h1>
           </motion.div>
-        </div>
 
-        <motion.div className="wrap hero-frame" initial={reduced ? false : { opacity: 0, scale: .985 }} animate={reduced ? undefined : { opacity: 1, scale: 1 }} transition={{ duration: 1, delay: .22 }}>
-          <div className="hero-grid-lines" />
-          <div className="hero-question"><span>Decision brief / 01</span><h2>Why have enquiries slowed while repeat business remains stable?</h2></div>
-          <div className="evidence-card evidence-a"><small>Observed signal</small><strong>Website enquiries −18%</strong><p>The decline is concentrated among first-time visitors.</p></div>
-          <div className="evidence-card evidence-b"><small>Known</small><strong>Repeat customers remain stable</strong><p>Service satisfaction is unlikely to be the primary issue.</p></div>
-          <div className="evidence-card evidence-c"><small>Decision</small><strong>Improve visibility before increasing spend</strong><p>Prioritise search and enquiry conversion first.</p></div>
-        </motion.div>
-      </section>
-
-      <section className="manifesto section" id="about">
-        <div className="wrap intro-grid">
-          <Reveal><p className="eyebrow">Our point of view</p></Reveal>
-          <Reveal delay={.08}><h2>Important business decisions deserve more than instinct, fragmented data and familiar answers.</h2></Reveal>
+          <motion.p
+            className="hero-support"
+            initial={reduced ? false : { opacity: 0, y: 20 }}
+            animate={reduced ? undefined : { opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.18 }}
+          >
+            We help organisations understand markets, evaluate opportunities and move important commercial decisions from uncertainty to action.
+          </motion.p>
         </div>
       </section>
 
-      <section className="story section-compact">
-        <div className="wrap story-grid">
-          <Reveal className="story-art art-one"><i /><span>Market signal</span><span>Customer evidence</span><span>Commercial risk</span></Reveal>
-          <Reveal className="story-copy" delay={.08}><p className="eyebrow">Clarity before commitment</p><h3>We investigate before we recommend.</h3><p>Growth questions are rarely solved by one report or one campaign. We build a structured picture of the market, customer, competition and internal reality before deciding what should happen next.</p></Reveal>
+      <section className="featured-media page-wrap" aria-label="Featured Strat IQ introduction">
+        <ParallaxPanel className="media-frame">
+          <AbstractVisual variant="media" label="Strat IQ decision room" />
+        </ParallaxPanel>
+
+        <button className="play-control" type="button" onClick={() => setVideoOpen(true)}>
+          <span className="play-icon">
+            <Play size={18} fill="currentColor" />
+          </span>
+          <RollingLink>Play our approach</RollingLink>
+        </button>
+
+        <a className="media-cta" href="#Services">
+          <RollingLink>Explore our services</RollingLink>
+          <ArrowRight size={18} />
+        </a>
+      </section>
+
+      <section className="about section" id="About">
+        <div className="page-wrap intro-grid">
+          <Reveal>
+            <DotLabel>Just to clarify</DotLabel>
+          </Reveal>
+          <Reveal delay={0.08}>
+            <h2>We turn complex commercial questions into evidence, direction and action leaders can defend.</h2>
+          </Reveal>
+        </div>
+
+        <div className="logo-marquee" aria-label="Selected client placeholders">
+          <div className="marquee-track">
+            {["Northline", "Horizon", "Verity", "Axis", "Foundry", "Nova", "Northline", "Horizon", "Verity", "Axis", "Foundry", "Nova"].map(
+              (logo, index) => (
+                <span key={`${logo}-${index}`}>{logo}</span>
+              ),
+            )}
+          </div>
+        </div>
+
+        <div className="page-wrap about-notes">
+          <Reveal>
+            <p className="note-title">Clarity before commitment</p>
+            <p>We investigate the market, customer, competition and internal reality before recommending where time and money should move.</p>
+          </Reveal>
+          <Reveal delay={0.08}>
+            <p className="note-title">Action after insight</p>
+            <p>Every engagement finishes with a decision, an accountable roadmap and the measures that show whether the route is working.</p>
+          </Reveal>
         </div>
       </section>
 
-      <section className="story section-compact">
-        <div className="wrap story-grid reverse">
-          <Reveal className="story-copy"><p className="eyebrow">From intelligence to action</p><h3>A recommendation matters only when it changes the next move.</h3><p>We connect evidence to strategy, execution and measurement so insights do not disappear into a presentation. Every engagement creates a decision, roadmap and visible accountability.</p></Reveal>
-          <Reveal className="story-art art-two" delay={.08}><div>Evidence</div><div>Options</div><div>Decision</div></Reveal>
+      <section className="services section" id="Services">
+        <div className="page-wrap intro-grid">
+          <Reveal>
+            <DotLabel>Our services</DotLabel>
+          </Reveal>
+          <Reveal delay={0.08}>
+            <h2>From understanding the market to implementing the next move, every service exists to improve a decision.</h2>
+          </Reveal>
+        </div>
+
+        <div className="page-wrap services-layout">
+          <Reveal className="service-visual-wrap">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeService}
+                initial={reduced ? false : { opacity: 0, scale: 0.985 }}
+                animate={reduced ? undefined : { opacity: 1, scale: 1 }}
+                exit={reduced ? undefined : { opacity: 0, scale: 1.01 }}
+                transition={{ duration: 0.42 }}
+              >
+                <AbstractVisual variant={services[activeService].tone} label={services[activeService].label} />
+              </motion.div>
+            </AnimatePresence>
+          </Reveal>
+
+          <div className="service-list">
+            {services.map((service, index) => {
+              const open = activeService === index;
+              return (
+                <article className={`service-item ${open ? "is-open" : ""}`} key={service.label}>
+                  <button
+                    type="button"
+                    className="service-trigger"
+                    aria-expanded={open}
+                    aria-controls={`service-panel-${index}`}
+                    onClick={() => setActiveService(index)}
+                  >
+                    <span>{service.label}</span>
+                    <span className="service-toggle" aria-hidden="true">
+                      {open ? <Minus size={20} /> : <Plus size={20} />}
+                    </span>
+                  </button>
+
+                  <AnimatePresence initial={false}>
+                    {open && (
+                      <motion.div
+                        className="service-panel"
+                        id={`service-panel-${index}`}
+                        initial={reduced ? false : { height: 0, opacity: 0 }}
+                        animate={reduced ? undefined : { height: "auto", opacity: 1 }}
+                        exit={reduced ? undefined : { height: 0, opacity: 0 }}
+                        transition={{ duration: 0.42, ease: [0.22, 1, 0.36, 1] }}
+                      >
+                        <h3>{service.title}</h3>
+                        <p className="service-summary">{service.summary}</p>
+                        <p>{service.detail}</p>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </article>
+              );
+            })}
+          </div>
         </div>
       </section>
 
-      <section className="capabilities section" id="capabilities">
-        <div className="wrap intro-grid">
-          <Reveal><p className="eyebrow">Capabilities</p></Reveal>
-          <Reveal delay={.08}><h2>From understanding the market to implementing the next move.</h2></Reveal>
+      <section className="image-cta page-wrap">
+        <ParallaxPanel className="image-cta-panel">
+          <AbstractVisual variant="field" label="Market evidence in motion" />
+          <div className="image-cta-overlay">
+            <Reveal>
+              <h2>See the pattern.<br />Change the outcome.</h2>
+            </Reveal>
+            <a className="light-button" href="#Contact">
+              <span className="button-icon"><ArrowRight size={18} /></span>
+              <RollingLink>Start with the question</RollingLink>
+            </a>
+          </div>
+        </ParallaxPanel>
+      </section>
+
+      <section className="approach section">
+        <div className="page-wrap intro-grid">
+          <Reveal><DotLabel>Our approach</DotLabel></Reveal>
+          <Reveal delay={0.08}>
+            <h2>A disciplined path from uncertainty to action, with no black box between research and recommendation.</h2>
+          </Reveal>
         </div>
-        <div className="wrap capability-list">
-          {capabilities.map((item) => (
-            <article className="capability-row" key={item.index}>
-              <Reveal className="capability-meta"><strong>{item.index}</strong><span>{item.label}</span></Reveal>
-              <Reveal className="capability-copy" delay={.05}><h3>{item.title}</h3><p>{item.copy}</p><a href="#contact">Discuss this capability <ArrowDownRight size={18} /></a></Reveal>
-              <Reveal className={`capability-visual ${item.tone}`} delay={.1}><i /><i /><i /></Reveal>
-            </article>
+
+        <div className="page-wrap approach-grid">
+          {approach.map((item, index) => {
+            const Icon = item.icon;
+            return (
+              <Reveal className="approach-item" delay={index * 0.08} key={item.number}>
+                <span className="approach-number">{item.number}</span>
+                <Icon className="approach-icon" size={52} strokeWidth={1.25} />
+                <h3>{item.title}</h3>
+                <p>{item.copy}</p>
+              </Reveal>
+            );
+          })}
+        </div>
+      </section>
+
+      <section className="split-story section">
+        <div className="page-wrap split-grid">
+          <ParallaxPanel className="split-visual">
+            <AbstractVisual variant="brief" label="Decision brief / evidence map" />
+          </ParallaxPanel>
+          <div className="split-copy">
+            <Reveal>
+              <h2>Make assumptions visible before they become expensive.</h2>
+            </Reveal>
+            <div className="split-notes">
+              <Reveal delay={0.06}>
+                <p className="note-title">Evidence that connects</p>
+                <p>We bring fragmented market, customer and performance signals into one view, so the team works from the same reality.</p>
+              </Reveal>
+              <Reveal delay={0.12}>
+                <p className="note-title">Risk that can be discussed</p>
+                <p>Uncertainty is documented, tested and translated into choices rather than hidden behind confident language.</p>
+              </Reveal>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="split-story section split-reverse">
+        <div className="page-wrap split-grid">
+          <div className="split-copy">
+            <Reveal>
+              <h2>Build a strategy that survives contact with execution.</h2>
+            </Reveal>
+            <div className="split-notes">
+              <Reveal delay={0.06}>
+                <p className="note-title">A route, not a wish list</p>
+                <p>The plan is sequenced around constraints, capacity and the few moves most likely to change commercial performance.</p>
+              </Reveal>
+              <Reveal delay={0.12}>
+                <p className="note-title">Signals, not theatre</p>
+                <p>Measures are agreed before activity begins, so teams can learn, adapt and stop work that is not earning its place.</p>
+              </Reveal>
+            </div>
+          </div>
+          <ParallaxPanel className="split-visual">
+            <AbstractVisual variant="roadmap" label="Growth roadmap / next 90 days" />
+          </ParallaxPanel>
+        </div>
+      </section>
+
+      <section className="statistics section">
+        <div className="page-wrap intro-grid">
+          <Reveal><DotLabel>By the numbers</DotLabel></Reveal>
+          <Reveal delay={0.08}>
+            <h2>A small intelligence practice built around senior attention, focused work and measurable movement.</h2>
+          </Reveal>
+        </div>
+
+        <div className="page-wrap stats-grid">
+          {[
+            ["01", "Senior team on every engagement"],
+            ["15+", "Markets and categories investigated"],
+            ["32", "Decision briefs delivered"],
+            ["14", "Growth roadmaps activated this year"],
+          ].map(([value, label], index) => (
+            <Reveal className="stat-item" delay={index * 0.06} key={label}>
+              <span>{value}</span>
+              <p>{label}</p>
+            </Reveal>
           ))}
         </div>
       </section>
 
-      <section className="statement-band"><div className="wrap statement-stack"><Reveal><p>Ask better.</p></Reveal><Reveal delay={.08}><p>Investigate deeper.</p></Reveal><Reveal delay={.16}><p>Move with confidence.</p></Reveal></div></section>
+      <section className="image-cta page-wrap image-cta-second">
+        <ParallaxPanel className="image-cta-panel">
+          <AbstractVisual variant="network" label="Signals aligned around one decision" />
+          <div className="image-cta-overlay image-cta-right">
+            <Reveal>
+              <h2>Investigate deeper.<br />Move with confidence.</h2>
+            </Reveal>
+            <a className="light-button" href="#Contact">
+              <span className="button-icon"><ArrowRight size={18} /></span>
+              <RollingLink>Bring us the decision</RollingLink>
+            </a>
+          </div>
+        </ParallaxPanel>
+      </section>
 
-      <section className="approach section" id="approach">
-        <div className="wrap intro-grid inverse"><Reveal><p className="eyebrow">Approach</p></Reveal><Reveal delay={.08}><h2>A disciplined path from uncertainty to action.</h2></Reveal></div>
-        <div className="wrap approach-list">
-          {approach.map(([number, title, copy], index) => <Reveal className="approach-row" key={number} delay={index * .06}><span>{number}</span><h3>{title}</h3><p>{copy}</p></Reveal>)}
+      <section className="testimonials section" id="Testimonials">
+        <div className="page-wrap intro-grid">
+          <Reveal><DotLabel>Our clients say</DotLabel></Reveal>
+          <Reveal delay={0.08}>
+            <h2>Clarity is useful only when it helps people make, explain and execute a better decision.</h2>
+          </Reveal>
+        </div>
+
+        <div className="page-wrap testimonial-shell" role="region" aria-label="Client testimonials">
+          <div className="testimonial-viewport">
+            <motion.div
+              className="testimonial-track"
+              animate={reduced ? undefined : { x: `${-testimonialIndex * 100}%` }}
+              style={reduced ? { transform: `translateX(${-testimonialIndex * 100}%)` } : undefined}
+              transition={{ duration: 0.58, ease: [0.22, 1, 0.36, 1] }}
+              drag={reduced ? false : "x"}
+              dragConstraints={{ left: 0, right: 0 }}
+              dragElastic={0.1}
+              onDragEnd={(_, info) => {
+                if (info.offset.x < -60) nextTestimonial();
+                if (info.offset.x > 60) previousTestimonial();
+              }}
+            >
+              {testimonials.map((testimonial, index) => (
+                <article className="testimonial-card" key={testimonial.name} aria-hidden={testimonialIndex !== index}>
+                  <Sparkles size={28} strokeWidth={1.35} />
+                  <blockquote>“{testimonial.quote}”</blockquote>
+                  <div className="client-meta">
+                    <span className="client-avatar">{testimonial.initials}</span>
+                    <p><strong>{testimonial.name}</strong><small>{testimonial.role}</small></p>
+                  </div>
+                </article>
+              ))}
+            </motion.div>
+          </div>
+
+          <div className="slider-controls">
+            <p><span>{String(testimonialIndex + 1).padStart(2, "0")}</span> / {String(testimonials.length).padStart(2, "0")}</p>
+            <div>
+              <button type="button" aria-label="Previous testimonial" onClick={previousTestimonial}><ChevronLeft /></button>
+              <button type="button" aria-label="Next testimonial" onClick={nextTestimonial}><ChevronRight /></button>
+            </div>
+          </div>
         </div>
       </section>
 
-      <section className="proof section">
-        <div className="wrap proof-grid">
-          <Reveal className="proof-art"><div /><div /><strong>IQ</strong></Reveal>
-          <Reveal className="proof-copy" delay={.08}><p className="eyebrow">Evidence changes the conversation</p><h2>Recommendations become stronger when assumptions are visible.</h2><div className="proof-list">{["Facts separated from assumptions", "Knowledge gaps made visible", "Risks and trade-offs documented", "Recommendations linked to action"].map((item) => <span key={item}><Check size={18} />{item}</span>)}</div></Reveal>
+      <section className="team section" id="Team">
+        <div className="page-wrap team-intro">
+          <Reveal><DotLabel>Meet us</DotLabel><p className="display-label">Team</p></Reveal>
+          <Reveal delay={0.08}><h2>Senior thinkers who move comfortably between evidence, strategy and action.</h2></Reveal>
+          <Reveal delay={0.12}><p>Every engagement stays close to the people doing the thinking. The team shown here uses placeholder names and roles until the final Strat IQ roster is confirmed.</p></Reveal>
+        </div>
+
+        <div className="page-wrap team-grid">
+          {team.map(([initials, name, role], index) => (
+            <Reveal className="team-card" delay={index * 0.06} key={name}>
+              <div className={`portrait portrait-${index + 1}`} role="img" aria-label={`Portrait placeholder for ${name}`}>
+                <span>{initials}</span>
+                <a href={`mailto:${name.toLowerCase().replaceAll(" ", ".")}@stratiq.example`} aria-label={`Email ${name}`}><Mail size={19} /></a>
+              </div>
+              <p><strong>{name}</strong><small>{role}</small></p>
+            </Reveal>
+          ))}
         </div>
       </section>
 
-      <section className="insights section" id="insights">
-        <div className="wrap intro-grid"><Reveal><p className="eyebrow">Featured intelligence</p></Reveal><Reveal delay={.08}><h2>Ideas for leaders making the next decision.</h2></Reveal></div>
-        <div className="wrap insight-list">
-          {insights.map(([meta, title], index) => <Reveal className="insight-row" key={title} delay={index * .06}><span>0{index + 1}</span><div><small>{meta}</small><h3>{title}</h3></div><ArrowDownRight size={28} /></Reveal>)}
+      <section className="pricing section" id="Pricing">
+        <div className="page-wrap intro-grid">
+          <Reveal><DotLabel>Pricing</DotLabel></Reveal>
+          <Reveal delay={0.08}>
+            <h2>Clear starting points for different decisions, with final scope shaped around the evidence required.</h2>
+          </Reveal>
+        </div>
+
+        <div className="page-wrap pricing-grid">
+          {plans.map((plan, index) => (
+            <Reveal className={`pricing-card ${plan.featured ? "is-featured" : ""}`} delay={index * 0.08} key={plan.name}>
+              <div className="pricing-top">
+                <span className="plan-index">0{index + 1}</span>
+                <h3>{plan.name}</h3>
+                <p>{plan.description}</p>
+              </div>
+              <div className="price"><strong>{plan.price}</strong><small>{plan.period}</small></div>
+              <a href="#Contact"><RollingLink>Discuss this engagement</RollingLink><ArrowRight size={18} /></a>
+              <div className="included">
+                <p>What is included?</p>
+                <ul>{plan.features.map((feature) => <li key={feature}><span />{feature}</li>)}</ul>
+              </div>
+            </Reveal>
+          ))}
         </div>
       </section>
 
-      <section className="contact section" id="contact">
-        <div className="wrap contact-grid">
-          <Reveal><p className="eyebrow">Contact</p><h2>Bring us the decision you need to make.</h2></Reveal>
-          <Reveal className="contact-panel" delay={.08}><p>Tell us what is changing, what feels uncertain and what decision is waiting. We will begin by clarifying the question.</p><a href="mailto:hello@stratiq.example">hello@stratiq.example <ArrowRight size={22} /></a></Reveal>
+      <section className="contact section" id="Contact">
+        <div className="page-wrap intro-grid">
+          <Reveal><DotLabel>Contact</DotLabel></Reveal>
+          <Reveal delay={0.08}><h2>Bring us the decision you need to make. We will begin by clarifying the question.</h2></Reveal>
+        </div>
+
+        <div className="page-wrap contact-layout">
+          <Reveal className="contact-aside">
+            <p>Tell us what is changing, what feels uncertain and what has to happen next. The details here are placeholders until the final contact channel is connected.</p>
+            <a href="mailto:hello@stratiq.example">hello@stratiq.example <ArrowUpRight size={18} /></a>
+          </Reveal>
+
+          <Reveal delay={0.08}>
+            <form className="contact-form" onSubmit={handleContact} noValidate>
+              <label><span>Your name</span><input type="text" name="name" autoComplete="name" placeholder="Name" /></label>
+              <label><span>Your email</span><input type="email" name="email" autoComplete="email" placeholder="Email address" /></label>
+              <label><span>Your message</span><textarea name="message" rows={5} placeholder="What decision are you trying to make?" /></label>
+              <button className="submit-button" type="submit">
+                <span className="button-icon"><ArrowRight size={18} /></span>
+                <RollingLink>Get in touch</RollingLink>
+              </button>
+              <div className="form-status" aria-live="polite">
+                {formState === "error" && <p className="form-error">Please add your name, a valid email and at least a short description of the decision.</p>}
+                {formState === "success" && <p className="form-success">Your email application should now open with the enquiry prepared.</p>}
+              </div>
+            </form>
+          </Reveal>
         </div>
       </section>
 
-      <footer><div className="wrap footer-grid"><a className="brand" href="#top"><span>S</span>Strat IQ</a><p>Business intelligence & growth advisory.</p><a href="#top">Back to top ↑</a></div></footer>
+      <footer className="site-footer">
+        <div className="page-wrap footer-top">
+          <p>© 2026 Strat IQ</p>
+          <a href="#top"><RollingLink>Back to top</RollingLink><ArrowRight size={17} /></a>
+        </div>
+        <div className="page-wrap footer-main">
+          <a className="brand footer-brand" href="#top"><span aria-hidden="true" />Strat IQ</a>
+          <div className="footer-links"><a href="#About">About</a><a href="#Services">Services</a><a href="#Contact">Contact</a></div>
+          <div className="footer-links"><a href="#">Privacy</a><a href="#">Terms</a><span>All rights reserved</span></div>
+        </div>
+      </footer>
+
+      <AnimatePresence>
+        {videoOpen && (
+          <motion.div
+            className="video-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Strat IQ approach film"
+            initial={reduced ? false : { opacity: 0 }}
+            animate={reduced ? undefined : { opacity: 1 }}
+            exit={reduced ? undefined : { opacity: 0 }}
+            onMouseDown={(event) => {
+              if (event.target === event.currentTarget) setVideoOpen(false);
+            }}
+          >
+            <motion.div className="video-dialog" initial={reduced ? false : { scale: 0.97 }} animate={reduced ? undefined : { scale: 1 }}>
+              <button type="button" aria-label="Close video" onClick={() => setVideoOpen(false)}><X /></button>
+              <div className="video-placeholder">
+                <span><Play size={24} fill="currentColor" /></span>
+                <p>Strat IQ approach film</p>
+                <small>Video content placeholder</small>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </main>
   );
 }
