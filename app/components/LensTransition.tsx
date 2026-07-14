@@ -42,7 +42,7 @@ export default function LensTransition() {
         <div className="page-wrap lens-layout">
           <motion.div className="lens-intro" style={reduced ? undefined : { opacity: introOpacity, y: introY }}>
             <p className="dot-label"><span aria-hidden="true" />See what matters</p>
-            <h2 id="lens-transition-title">Move through the noise.</h2>
+            <h2 id="lens-transition-title">Find the signal.</h2>
             <p className="lens-intro-copy">
               The right decision is rarely hidden. It is usually buried beneath too many signals, assumptions and competing routes.
             </p>
