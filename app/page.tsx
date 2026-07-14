@@ -17,6 +17,7 @@ import {
   X,
 } from "lucide-react";
 import { AnimatePresence, motion, useReducedMotion, useScroll, useTransform } from "motion/react";
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
 const navItems = ["About", "Services", "Testimonials", "Team", "Pricing"];
@@ -359,10 +360,13 @@ export default function Home() {
 
       <section className="featured-media page-wrap" aria-label="Featured Strat IQ introduction">
         <ParallaxPanel className="media-frame">
-          <div
+          <Image
             className="editorial-image"
-            role="img"
-            aria-label="A senior strategy team reviewing market evidence around a worktable"
+            src="/images/stratiq-featured-editorial.png"
+            alt="A senior strategy team reviewing market evidence around a worktable"
+            fill
+            priority
+            sizes="(max-width: 820px) calc(100vw - 20px), min(100vw - 48px, 1315px)"
           />
         </ParallaxPanel>
 
