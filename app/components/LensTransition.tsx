@@ -4,10 +4,10 @@ import { motion, useReducedMotion, useScroll, useTransform } from "motion/react"
 import { useRef } from "react";
 
 const signalFragments = [
-  { label: "market", className: "fragment-market" },
-  { label: "assumption", className: "fragment-assumption" },
-  { label: "signal", className: "fragment-signal" },
-  { label: "choice", className: "fragment-choice" },
+  { code: "OD", reading: "20 / 20", className: "fragment-od" },
+  { code: "OS", reading: "20 / 25", className: "fragment-os" },
+  { code: "SPH", reading: "+1.25", className: "fragment-sph" },
+  { code: "AXIS", reading: "090°", className: "fragment-axis" },
 ];
 
 const solutionSignals = ["Signal", "Direction", "Action"];
@@ -20,19 +20,24 @@ export default function LensTransition() {
     offset: ["start start", "end end"],
   });
 
-  const signalX = useTransform(scrollYProgress, [0, 0.2, 0.68, 1], ["-48%", "-18%", "18%", "48%"]);
-  const signalScale = useTransform(scrollYProgress, [0, 0.24, 0.64, 1], [0.78, 0.92, 1.04, 0.8]);
-  const signalOpacity = useTransform(scrollYProgress, [0, 0.12, 0.68, 0.88, 1], [0.42, 1, 1, 0.55, 0]);
+  const signalX = useTransform(
+    scrollYProgress,
+    [0, 0.16, 0.34, 0.46, 0.74, 0.9, 1],
+    ["-120%", "-64%", "-18%", "0%", "0%", "64%", "120%"],
+  );
+  const signalScale = useTransform(scrollYProgress, [0, 0.2, 0.38, 0.46, 0.74, 0.9, 1], [0.8, 0.9, 1, 1, 1, 0.94, 0.78]);
+  const signalOpacity = useTransform(scrollYProgress, [0, 0.12, 0.24, 0.46, 0.74, 0.88, 1], [0, 0.35, 1, 1, 1, 0.4, 0]);
   const signalFilter = useTransform(
     scrollYProgress,
-    [0, 0.2, 0.62, 0.86, 1],
-    ["blur(10px)", "blur(6px)", "blur(0px)", "blur(0px)", "blur(0px)"],
+    [0, 0.18, 0.38, 0.74, 0.9, 1],
+    ["blur(12px)", "blur(7px)", "blur(0px)", "blur(0px)", "blur(5px)", "blur(10px)"],
   );
+  const signalGap = useTransform(scrollYProgress, [0, 0.2, 0.38, 0.46, 0.74, 0.9, 1], [12, 18, 34, 46, 46, 22, 12]);
   const introOpacity = useTransform(scrollYProgress, [0, 0.18, 0.44], [1, 0.92, 0]);
   const introY = useTransform(scrollYProgress, [0, 0.44], [0, -28]);
-  const solutionOpacity = useTransform(scrollYProgress, [0.52, 0.72, 0.9, 1], [0, 0.2, 1, 1]);
-  const solutionY = useTransform(scrollYProgress, [0.52, 1], [22, 0]);
-  const solutionScale = useTransform(scrollYProgress, [0.52, 1], [0.94, 1]);
+  const solutionOpacity = useTransform(scrollYProgress, [0.76, 0.88, 0.96, 1], [0, 0.15, 1, 1]);
+  const solutionY = useTransform(scrollYProgress, [0.76, 1], [22, 0]);
+  const solutionScale = useTransform(scrollYProgress, [0.76, 1], [0.94, 1]);
   const focusOpacity = useTransform(scrollYProgress, [0.1, 0.5, 0.9], [0.18, 0.7, 0.95]);
   const progressWidth = useTransform(scrollYProgress, [0, 1], ["8%", "100%"]);
 
@@ -61,16 +66,16 @@ export default function LensTransition() {
                       scale: signalScale,
                       opacity: signalOpacity,
                       filter: signalFilter,
+                      gap: signalGap,
                     }
               }
             >
               {signalFragments.map((fragment) => (
-                <span className={`lens-fragment ${fragment.className}`} key={fragment.label}>
-                  {fragment.label}
+                <span className={`lens-fragment ${fragment.className}`} key={fragment.code}>
+                  <span className="fragment-code">{fragment.code}</span>
+                  <span className="fragment-reading">{fragment.reading}</span>
                 </span>
               ))}
-              <span className="signal-rule" />
-              <span className="signal-rule signal-rule-short" />
             </motion.div>
 
             <motion.div className="lens-focus-ring" aria-hidden="true" style={reduced ? undefined : { opacity: focusOpacity }} />
