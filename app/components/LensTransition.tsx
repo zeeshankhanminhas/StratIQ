@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, type MotionValue, useReducedMotion, useScroll, useTransform } from "motion/react";
+import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
 import { useRef } from "react";
 
 const signalFragments = [
@@ -12,21 +12,6 @@ const signalFragments = [
 
 const solutionSignals = ["Signal", "Direction", "Action"];
 
-function useSequentialWordMotion(progress: MotionValue<number>, range: [number, number, number, number]) {
-  const [entryStart, entryEnd, exitStart, exitEnd] = range;
-
-  return {
-    x: useTransform(progress, [entryStart, entryEnd, exitStart, exitEnd], ["-120%", "0%", "0%", "120%"]),
-    opacity: useTransform(progress, [entryStart, entryEnd, exitStart, exitEnd], [0, 1, 1, 0]),
-    scale: useTransform(progress, [entryStart, entryEnd, exitStart, exitEnd], [0.86, 1, 1, 0.9]),
-    filter: useTransform(
-      progress,
-      [entryStart, entryEnd, exitStart, exitEnd],
-      ["blur(8px)", "blur(0px)", "blur(0px)", "blur(8px)"],
-    ),
-  };
-}
-
 export default function LensTransition() {
   const sectionRef = useRef<HTMLElement>(null);
   const reduced = useReducedMotion();
@@ -35,16 +20,19 @@ export default function LensTransition() {
     offset: ["start start", "end end"],
   });
 
-  const marketMotion = useSequentialWordMotion(scrollYProgress, [0.03, 0.09, 0.22, 0.28]);
-  const assumptionMotion = useSequentialWordMotion(scrollYProgress, [0.28, 0.34, 0.47, 0.53]);
-  const signalMotion = useSequentialWordMotion(scrollYProgress, [0.53, 0.59, 0.72, 0.78]);
-  const choiceMotion = useSequentialWordMotion(scrollYProgress, [0.78, 0.84, 0.94, 0.99]);
-  const wordMotions = [marketMotion, assumptionMotion, signalMotion, choiceMotion];
+  const signalX = useTransform(scrollYProgress, [0, 0.2, 0.68, 1], ["-48%", "-18%", "18%", "48%"]);
+  const signalScale = useTransform(scrollYProgress, [0, 0.24, 0.64, 1], [0.78, 0.92, 1.04, 0.8]);
+  const signalOpacity = useTransform(scrollYProgress, [0, 0.12, 0.68, 0.88, 1], [0.42, 1, 1, 0.55, 0]);
+  const signalFilter = useTransform(
+    scrollYProgress,
+    [0, 0.2, 0.62, 0.86, 1],
+    ["blur(10px)", "blur(6px)", "blur(0px)", "blur(0px)", "blur(0px)"],
+  );
   const introOpacity = useTransform(scrollYProgress, [0, 0.18, 0.44], [1, 0.92, 0]);
   const introY = useTransform(scrollYProgress, [0, 0.44], [0, -28]);
-  const solutionOpacity = useTransform(scrollYProgress, [0.94, 0.98, 1], [0, 0.2, 1]);
-  const solutionY = useTransform(scrollYProgress, [0.94, 1], [22, 0]);
-  const solutionScale = useTransform(scrollYProgress, [0.94, 1], [0.94, 1]);
+  const solutionOpacity = useTransform(scrollYProgress, [0.52, 0.72, 0.9, 1], [0, 0.2, 1, 1]);
+  const solutionY = useTransform(scrollYProgress, [0.52, 1], [22, 0]);
+  const solutionScale = useTransform(scrollYProgress, [0.52, 1], [0.94, 1]);
   const focusOpacity = useTransform(scrollYProgress, [0.1, 0.5, 0.9], [0.18, 0.7, 0.95]);
   const progressWidth = useTransform(scrollYProgress, [0, 1], ["8%", "100%"]);
 
@@ -62,17 +50,28 @@ export default function LensTransition() {
           </motion.div>
 
           <div className="lens-stage">
-            <div className="lens-signal-layer" aria-hidden="true">
-              {signalFragments.map((fragment, index) => (
-                <motion.span
-                  className={`lens-fragment ${fragment.className}`}
-                  key={fragment.label}
-                  style={reduced ? undefined : wordMotions[index]}
-                >
+            <motion.div
+              className="lens-signal-layer"
+              aria-hidden="true"
+              style={
+                reduced
+                  ? undefined
+                  : {
+                      x: signalX,
+                      scale: signalScale,
+                      opacity: signalOpacity,
+                      filter: signalFilter,
+                    }
+              }
+            >
+              {signalFragments.map((fragment) => (
+                <span className={`lens-fragment ${fragment.className}`} key={fragment.label}>
                   {fragment.label}
-                </motion.span>
+                </span>
               ))}
-            </div>
+              <span className="signal-rule" />
+              <span className="signal-rule signal-rule-short" />
+            </motion.div>
 
             <motion.div className="lens-focus-ring" aria-hidden="true" style={reduced ? undefined : { opacity: focusOpacity }} />
 

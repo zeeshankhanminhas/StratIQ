@@ -2387,7 +2387,7 @@ body {
 /* Lens transition preview */
 .lens-transition {
   position: relative;
-  height: 230vh;
+  height: 210vh;
   margin-top: clamp(16px, 3vw, 44px);
   overflow: clip;
   border-block: 1px solid var(--line);
@@ -2491,46 +2491,64 @@ body {
   position: absolute;
   z-index: 2;
   top: 50%;
-  left: 0;
-  width: 100%;
-  height: 110px;
-  margin-top: -55px;
+  left: -15%;
+  display: flex;
+  align-items: center;
+  width: 130%;
+  height: 116px;
+  gap: clamp(12px, 2.2vw, 30px);
+  margin-top: -58px;
+  transform-origin: center;
   white-space: nowrap;
 }
 
 .lens-fragment {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  display: block;
-  padding: 0 0 13px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.44);
-  border-radius: 0;
-  color: rgba(255, 255, 255, 0.76);
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-  font-size: clamp(1rem, 2.4vw, 2rem);
-  font-weight: 500;
-  letter-spacing: 0.18em;
-  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 112px;
+  height: 58px;
+  padding: 0 18px;
+  border: 1px solid rgba(42, 41, 40, 0.36);
+  border-radius: 100px;
+  color: rgba(42, 41, 40, 0.76);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  text-shadow: 0 0 18px rgba(255, 255, 255, 0.16);
-  translate: -50% -50%;
 }
 
 .fragment-market {
-  border-bottom-color: rgba(251, 229, 126, 0.82);
+  background: rgba(251, 229, 126, 0.78);
+  transform: rotate(-7deg);
 }
 
 .fragment-assumption {
-  border-bottom-color: rgba(255, 255, 255, 0.72);
+  background: rgba(255, 255, 255, 0.45);
+  transform: rotate(5deg);
 }
 
 .fragment-signal {
-  border-bottom-color: rgba(155, 191, 184, 0.78);
+  background: rgba(42, 41, 40, 0.82);
+  color: var(--white);
+  transform: rotate(-3deg);
 }
 
 .fragment-choice {
-  border-bottom-color: rgba(255, 255, 255, 0.86);
+  background: rgba(255, 255, 255, 0.58);
+  transform: rotate(8deg);
+}
+
+.signal-rule {
+  display: block;
+  width: 132px;
+  height: 1px;
+  background: rgba(42, 41, 40, 0.35);
+}
+
+.signal-rule-short {
+  width: 58px;
+  transform: translateY(20px);
 }
 
 .lens-focus-ring {
@@ -2768,10 +2786,6 @@ body {
   transform: none;
 }
 
-.lens-transition.is-reduced .lens-fragment:not(:first-child) {
-  opacity: 0;
-}
-
 .lens-transition.is-reduced .lens-solution {
   opacity: 1;
   transform: none;
@@ -2800,7 +2814,7 @@ body {
 
 @media (max-width: 820px) {
   .lens-transition {
-    height: 205vh;
+    height: 185vh;
   }
 
   .lens-sticky {
@@ -2850,7 +2864,7 @@ body {
 
 @media (max-width: 560px) {
   .lens-transition {
-    height: 195vh;
+    height: 175vh;
     margin-top: 0;
   }
 
@@ -2884,16 +2898,26 @@ body {
   }
 
   .lens-signal-layer {
-    left: 0;
-    width: 100%;
-    height: 96px;
-    margin-top: -48px;
+    left: -34%;
+    width: 168%;
+    height: 86px;
+    margin-top: -43px;
+    gap: 10px;
   }
 
   .lens-fragment {
-    padding-bottom: 9px;
-    font-size: 0.78rem;
-    letter-spacing: 0.14em;
+    min-width: 82px;
+    height: 42px;
+    padding: 0 10px;
+    font-size: 0.55rem;
+  }
+
+  .signal-rule {
+    width: 70px;
+  }
+
+  .signal-rule-short {
+    width: 34px;
   }
 
   .monocular {
@@ -3028,6 +3052,11 @@ body {
 .lens-solution-position .solution-signals i {
   color: var(--accent);
   font-size: 0.52rem;
+}
+
+.lens-fragment {
+  border-radius: 5px;
+  box-shadow: 0 8px 18px rgba(42, 41, 40, 0.08);
 }
 
 .lens-transition.is-reduced .lens-solution-position {
