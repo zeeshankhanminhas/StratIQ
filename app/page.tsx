@@ -359,7 +359,7 @@ export default function Home() {
       </section>
 
       <section className="featured-media page-wrap" aria-label="Featured Strat IQ introduction">
-        <ParallaxPanel className="media-frame">
+        <div className="media-frame">
           <Image
             className="editorial-image"
             src="/images/stratiq-featured-editorial.png"
@@ -368,7 +368,7 @@ export default function Home() {
             priority
             sizes="(max-width: 820px) calc(100vw - 20px), min(100vw - 48px, 1315px)"
           />
-        </ParallaxPanel>
+        </div>
 
         <button className="play-control" type="button" onClick={() => setVideoOpen(true)}>
           <span className="play-icon">
