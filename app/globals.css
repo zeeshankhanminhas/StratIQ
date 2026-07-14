@@ -2492,57 +2492,45 @@ body {
   z-index: 2;
   top: 50%;
   left: 0;
-  display: flex;
-  align-items: baseline;
-  justify-content: center;
   width: 100%;
-  height: 88px;
-  gap: 12px;
-  margin-top: -44px;
-  transform-origin: center;
+  height: 110px;
+  margin-top: -55px;
   white-space: nowrap;
 }
 
 .lens-fragment {
-  display: inline-flex;
-  align-items: center;
-  gap: 9px;
-  min-width: 0;
-  height: auto;
-  padding: 0 0 12px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: block;
+  padding: 0 0 13px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.44);
   border-radius: 0;
   color: rgba(255, 255, 255, 0.76);
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-  font-size: clamp(0.58rem, 0.92vw, 0.78rem);
+  font-size: clamp(1rem, 2.4vw, 2rem);
   font-weight: 500;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.18em;
   line-height: 1;
   text-transform: uppercase;
+  text-shadow: 0 0 18px rgba(255, 255, 255, 0.16);
+  translate: -50% -50%;
 }
 
-.fragment-code {
-  color: rgba(255, 255, 255, 0.58);
-  font-size: 0.62em;
-  letter-spacing: 0.2em;
-}
-
-.fragment-reading {
-  color: rgba(255, 255, 255, 0.92);
-  font-variant-numeric: tabular-nums;
-}
-
-.fragment-od {
+.fragment-market {
   border-bottom-color: rgba(251, 229, 126, 0.82);
 }
 
-.fragment-os {
+.fragment-assumption {
   border-bottom-color: rgba(255, 255, 255, 0.72);
 }
 
-.fragment-sph,
-.fragment-axis {
-  border-bottom-color: rgba(155, 191, 184, 0.74);
+.fragment-signal {
+  border-bottom-color: rgba(155, 191, 184, 0.78);
+}
+
+.fragment-choice {
+  border-bottom-color: rgba(255, 255, 255, 0.86);
 }
 
 .lens-focus-ring {
@@ -2780,6 +2768,10 @@ body {
   transform: none;
 }
 
+.lens-transition.is-reduced .lens-fragment:not(:first-child) {
+  opacity: 0;
+}
+
 .lens-transition.is-reduced .lens-solution {
   opacity: 1;
   transform: none;
@@ -2894,15 +2886,14 @@ body {
   .lens-signal-layer {
     left: 0;
     width: 100%;
-    height: 86px;
-    margin-top: -43px;
-    gap: 10px;
+    height: 96px;
+    margin-top: -48px;
   }
 
   .lens-fragment {
-    gap: 6px;
     padding-bottom: 9px;
-    font-size: 0.55rem;
+    font-size: 0.78rem;
+    letter-spacing: 0.14em;
   }
 
   .monocular {
