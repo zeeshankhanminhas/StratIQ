@@ -30,9 +30,9 @@ export default function LensTransition() {
   );
   const introOpacity = useTransform(scrollYProgress, [0, 0.18, 0.44], [1, 0.92, 0]);
   const introY = useTransform(scrollYProgress, [0, 0.44], [0, -28]);
-  const solutionOpacity = useTransform(scrollYProgress, [0.58, 0.78, 1], [0, 0.32, 1]);
-  const solutionY = useTransform(scrollYProgress, [0.58, 1], [46, 0]);
-  const solutionScale = useTransform(scrollYProgress, [0.58, 1], [0.96, 1]);
+  const solutionOpacity = useTransform(scrollYProgress, [0.52, 0.72, 0.9, 1], [0, 0.2, 1, 1]);
+  const solutionY = useTransform(scrollYProgress, [0.52, 1], [22, 0]);
+  const solutionScale = useTransform(scrollYProgress, [0.52, 1], [0.94, 1]);
   const focusOpacity = useTransform(scrollYProgress, [0.1, 0.5, 0.9], [0.18, 0.7, 0.95]);
   const progressWidth = useTransform(scrollYProgress, [0, 1], ["8%", "100%"]);
 
@@ -83,29 +83,30 @@ export default function LensTransition() {
               <span className="monocular-reflection reflection-one" />
               <span className="monocular-reflection reflection-two" />
               <span className="monocular-mark monocular-mark-top">STRAT IQ / 01</span>
-              <span className="monocular-mark monocular-mark-bottom">FOCUS / OUTPUT</span>
+              <span className="monocular-mark monocular-mark-bottom">FOCUS / 01</span>
             </div>
 
-            <motion.div
-              className="lens-solution"
-              style={
-                reduced
-                  ? undefined
-                  : { opacity: solutionOpacity, y: solutionY, scale: solutionScale }
-              }
-            >
-              <p className="solution-kicker">The output</p>
-              <h3>Clearer decisions.</h3>
-              <p>Evidence arranged into a route you can explain, choose and act on.</p>
-              <div className="solution-signals">
-                {solutionSignals.map((signal, index) => (
-                  <span key={signal}>
-                    <i aria-hidden="true">0{index + 1}</i>
-                    {signal}
-                  </span>
-                ))}
-              </div>
-            </motion.div>
+            <div className="lens-solution-position">
+              <motion.div
+                className="lens-solution"
+                style={
+                  reduced
+                    ? undefined
+                    : { opacity: solutionOpacity, y: solutionY, scale: solutionScale }
+                }
+              >
+                <h3>Clearer decisions.</h3>
+                <p>Evidence arranged into a route you can explain, choose and act on.</p>
+                <div className="solution-signals">
+                  {solutionSignals.map((signal, index) => (
+                    <span key={signal}>
+                      <i aria-hidden="true">0{index + 1}</i>
+                      {signal}
+                    </span>
+                  ))}
+                </div>
+              </motion.div>
+            </div>
 
             <div className="lens-progress">
               <span>UNFOCUSED</span>
