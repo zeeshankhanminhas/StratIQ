@@ -626,6 +626,43 @@ button:hover .rolling-track {
   height: 100%;
 }
 
+.service-visual-wrap > div {
+  position: relative;
+}
+
+.service-editorial-image {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--paper-deep);
+}
+
+.service-editorial-image::after {
+  position: absolute;
+  inset: auto 0 0;
+  height: 32%;
+  content: "";
+  background: linear-gradient(transparent, rgba(24, 24, 23, 0.78));
+  pointer-events: none;
+}
+
+.service-editorial-image img {
+  object-fit: cover;
+  object-position: center;
+}
+
+.service-editorial-image span {
+  position: absolute;
+  z-index: 2;
+  right: 28px;
+  bottom: 26px;
+  color: var(--white);
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
 .visual-signal {
   background: linear-gradient(145deg, #504e4a, #89837a);
 }
@@ -712,6 +749,26 @@ button:hover .rolling-track {
   margin-top: 24px;
   overflow: hidden;
   border-radius: var(--radius);
+}
+
+.image-cta-panel {
+  position: relative;
+  overflow: hidden;
+}
+
+.strategy-editorial-image {
+  z-index: 1;
+  object-fit: cover;
+  object-position: center;
+}
+
+.image-cta-panel::after {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  content: "";
+  pointer-events: none;
+  background: linear-gradient(90deg, rgba(17, 17, 16, 0.72), rgba(17, 17, 16, 0.08) 68%);
 }
 
 .visual-field {

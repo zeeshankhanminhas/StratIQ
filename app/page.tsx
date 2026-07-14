@@ -435,7 +435,15 @@ export default function Home() {
                 exit={reduced ? undefined : { opacity: 0, scale: 1.01 }}
                 transition={{ duration: 0.42 }}
               >
-                <AbstractVisual variant={services[activeService].tone} label={services[activeService].label} />
+                <div className="service-editorial-image">
+                  <Image
+                    src="/images/stratiq-signal-direction.png"
+                    alt="Abstract evidence signals converging into one strategic direction"
+                    fill
+                    sizes="(max-width: 820px) calc(100vw - 36px), 42vw"
+                  />
+                  <span>{services[activeService].label}</span>
+                </div>
               </motion.div>
             </AnimatePresence>
           </Reveal>
@@ -482,8 +490,14 @@ export default function Home() {
       </section>
 
       <section className="image-cta page-wrap">
-        <ParallaxPanel className="image-cta-panel">
-          <AbstractVisual variant="field" label="Market evidence in motion" />
+        <div className="image-cta-panel">
+          <Image
+            className="strategy-editorial-image"
+            src="/images/stratiq-strategy-editorial.png"
+            alt="A strategist reviewing market evidence in a city office"
+            fill
+            sizes="(max-width: 820px) calc(100vw - 20px), min(100vw - 48px, 1315px)"
+          />
           <div className="image-cta-overlay">
             <Reveal>
               <h2>See the pattern.<br />Change the outcome.</h2>
@@ -493,7 +507,7 @@ export default function Home() {
               <RollingLink>Start with the question</RollingLink>
             </a>
           </div>
-        </ParallaxPanel>
+        </div>
       </section>
 
       <section className="approach section">
