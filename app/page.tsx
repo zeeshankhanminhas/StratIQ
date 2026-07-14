@@ -19,6 +19,7 @@ import {
 import { AnimatePresence, motion, useReducedMotion, useScroll, useTransform } from "motion/react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import LensTransition from "./components/LensTransition";
 
 const navItems = ["About", "Services", "Testimonials", "Team", "Pricing"];
 
@@ -357,6 +358,8 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      <LensTransition />
 
       <section className="featured-media page-wrap" aria-label="Featured Strat IQ introduction">
         <div className="media-frame">
